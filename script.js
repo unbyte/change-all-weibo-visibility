@@ -25,29 +25,32 @@ async function changeAllWeiboVisibility(to, from = '') {
 
     changeBtnSeletor = (from ? `div[action-data="cur_visible=${visibleMap[from]}"] ` : '') + `a[action-data="visible=${visibleMap[to]}"]`
     let nextBtn
-    let changeBtns
     while (true) {
-        while ((changeBtns = document.querySelectorAll(changeBtnSeletor)).length) {
-            await Promise.all(
-                Array.prototype.map.call(
-                    changeBtns,
-                    (btn, i) => new Promise((resolve, reject) =>
-                        setTimeout(() => {
-                            btn.click()
-                            let checkBtn
-                            if (checkBtn = document.querySelector('a[action-type="ok"]')) {
-                                checkBtn.click()
-                                count++
-                                resolve()
-                            } else {
-                                console.error('no confirm dialog found')
-                                reject()
-                            }
-                        }, 2000 * i))))
+        while (!document.querySelector('.W_pages')) {
+            window.scrollTo(0, document.body.scrollHeight)
+            await new Promise(resolve => setTimeout(resolve, 2000))
         }
+
+        await Promise.all(
+            Array.prototype.map.call(
+                document.querySelectorAll(changeBtnSeletor),
+                (btn, i) => new Promise((resolve, reject) =>
+                    setTimeout(() => {
+                        btn.click()
+                        let checkBtn
+                        if (checkBtn = document.querySelector('a[action-type="ok"]')) {
+                            checkBtn.click()
+                            count++
+                            resolve()
+                        } else {
+                            console.error('no confirm dialog found')
+                            reject()
+                        }
+                    }, 2000 * i))))
+
         if (nextBtn = document.querySelector('a[class^="page next"]')) {
             nextBtn.click()
-            await new Promise(resolve => setTimeout(resolve, 4000))
+            await new Promise(resolve => setTimeout(resolve, 3000))
         } else {
             console.log(`done. ${count} changed.`)
             return
