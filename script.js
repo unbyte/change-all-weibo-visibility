@@ -22,13 +22,16 @@ async function changeAllWeiboVisibility(to, from = '') {
     }
 
     let count = 0
+    
+    let down = 0 // 记录下拉次数
 
     changeBtnSeletor = (from ? `div[action-data="cur_visible=${visibleMap[from]}"] ` : '') + `a[action-data="visible=${visibleMap[to]}"]`
     let nextBtn
     while (true) {
-        while (!document.querySelector('.W_pages')) {
+        while (!document.querySelector('.W_pages') && down < 5) {
             window.scrollTo(0, document.querySelector('.WB_frame_c').scrollHeight)
             await new Promise(resolve => setTimeout(resolve, 2000))
+            down++
         }
 
         await Promise.all(
