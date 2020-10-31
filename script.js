@@ -27,7 +27,7 @@ async function changeAllWeiboVisibility(to, from = '') {
     let nextBtn
     while (true) {
         while (!document.querySelector('.W_pages')) {
-            window.scrollTo(0, document.body.scrollHeight)
+            window.scrollTo(0, document.querySelector('.WB_frame_c').scrollHeight)
             await new Promise(resolve => setTimeout(resolve, 2000))
         }
 
